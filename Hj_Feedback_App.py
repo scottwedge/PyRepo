@@ -40,11 +40,11 @@ week_prior = today - timedelta(weeks=2)
 week_prior
 
 down_df['Date Submitted'] = pd.to_datetime(down_df['Date Submitted'])
-down_df = down_df.loc[down_df['Date Submitted'] >= week_prior]
-st.write(down_df)
+date_df = down_df.loc[down_df['Date Submitted'] >= week_prior]
+st.write(date_df)
 
-histfig = px.histogram(down_df, x='Date Submitted', color='Emotion (1-5)',
-                      title='Feedback Responses for '+url,
+histfig = px.histogram(date_df, x='Date Submitted', color='Emotion (1-5)',
+                      title='Feedback Responses for '+url+'(2 weeks)',
                       opacity=0.8,
                        category_orders={'Emotion (1-5)':[1,2,3,4,5]},
                        color_discrete_map={
@@ -58,12 +58,13 @@ histfig = px.histogram(down_df, x='Date Submitted', color='Emotion (1-5)',
                       )
 st.plotly_chart(histfig)
 
-pieplot = px.pie(down_df, names="Country", hole = .4, title="Feedback breakdown by country")
+pieplot = px.pie(down_df, names="Country", hole = .4, title="All Time Feedback Breakdown by country for "+url)
 st.plotly_chart(pieplot)
 
-mess_df=down_df.loc[down_df["Message"].notna()]
+mess_df=date_df.loc[date_df["Message"].notna()]
 mess_df = mess_df.drop(columns=['Number',"User","Device","OS","Browser"])
 
+st.subheader('Responses over the past 2 weeks:')
 for row in mess_df.itertuples():
     if row._5 == 3:
         st.info("\"" + row.Message + "\"")
