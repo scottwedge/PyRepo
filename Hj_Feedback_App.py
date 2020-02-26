@@ -19,7 +19,7 @@ pd.options.display.float_format = '{:.4f}'.format
 np.set_printoptions(precision=4, suppress=True)
 
 st.title("HotJar Feedback Analysis")
-df = pd.read_csv('C:/Users/rsolande/Downloads/feedback-256010.csv')
+df = pd.read_csv('feedback-256010.csv')
 
 sitelist = ["ab.rockwellautomation","www.rockwellautomation.com","www.rockwellautomation.com/my",
 "compatibility.rockwellautomation","www.rockwellautomation.com/account/","download.rockwellautomation.com"]
