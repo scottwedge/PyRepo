@@ -37,12 +37,16 @@ down_df = df[df['Source URL'].str.contains(url)]
 
 tmrange = st.slider("Week range:", min_value=1,max_value=52,step=1)
 from datetime import datetime, timedelta
+import pytz
 
 today = datetime.now()
+timzo = pytz.timezone('US/Eastern')
+today = timzo.localize(today)
 week_prior = today - timedelta(weeks=tmrange)
 week_prior
 
 down_df['Date Submitted'] = pd.to_datetime(down_df['Date Submitted'])
+down_df['Date Submitted']=down_df['Date Submitted'].dt.tz_localize(tz='US/Eastern', nonexistent='shift_forward')
 date_df = down_df.loc[down_df['Date Submitted'] >= week_prior]
 st.write(date_df)
 
