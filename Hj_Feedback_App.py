@@ -130,19 +130,19 @@ else:
 mess_df=date_df.loc[date_df["Message"].notna()]
 mess_df = mess_df.drop(columns=['Number',"User","OS"])
 
-from wordcloud import WordCloud, STOPWORDS
-import matplotlib.pyplot as plt
-if mess_df.empty == False:
-    st.header("WordCloud for feedback responses:")
-    cust_swords = ["Rockwell", "Automation"] + list(STOPWORDS)
-    wcloud = WordCloud(background_color="white", scale=2, font_path='calibri',min_font_size=12,max_words=100,stopwords=cust_swords).generate(" ".join(mess_df['Message']))
-    plt.figure(figsize=(20,10))
-    plt.imshow(wcloud, interpolation='bilinear')
-    plt.axis("off")
-    plt.show()
-    st.pyplot()
-else:
-    st.write("No responses for given filters.")
+#from wordcloud import WordCloud, STOPWORDS
+#import matplotlib.pyplot as plt
+#if mess_df.empty == False:
+    #st.header("WordCloud for feedback responses:")
+    #cust_swords = ["Rockwell", "Automation"] + list(STOPWORDS)
+    #wcloud = WordCloud(background_color="white", scale=2, font_path='calibri',min_font_size=12,max_words=100,stopwords=cust_swords).generate(" ".join(mess_df['Message']))
+    #plt.figure(figsize=(20,10))
+    #plt.imshow(wcloud, interpolation='bilinear')
+    #plt.axis("off")
+    #plt.show()
+    #st.pyplot()
+#else:
+    #st.write("No responses for given filters.")
 
 mfildic = {"[No filter]" : 1, "People who can't find a product" : 2, "People who can't download software" : 3, "People who may require a response" : 4}
 cfildic = {"[All Countries]" : 1, "United States" : 2, "Mexico" : 3, "China" : 4, "United Kingdom" : 5}
