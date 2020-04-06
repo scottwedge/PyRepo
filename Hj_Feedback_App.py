@@ -63,7 +63,7 @@ elif url == "ab.rockwellautomation":
 elif url == "rockwellautomation.com/search":
     down_df = df[df['Source URL'].str.contains('|'.join(["rockwellautomation.com/my/search",url]))]
 
-tmrange = st.slider("Week range:", min_value=1,max_value=52,step=1)
+tmrange = st.number_input("Week range:", min_value=1,max_value=52,step=1)
 today = datetime.now()
 timzo = pytz.timezone('US/Eastern')
 today = timzo.localize(today)
