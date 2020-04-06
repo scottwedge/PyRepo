@@ -11,6 +11,8 @@ import time
 import csv
 import plotly.express as px
 import streamlit as st
+from datetime import datetime, timedelta
+import pytz
 
 # options
 pd.set_option("display.precision", 3)
@@ -19,6 +21,10 @@ pd.options.display.float_format = '{:.4f}'.format
 np.set_printoptions(precision=4, suppress=True)
 
 st.title("HotJar Feedback Analysis")
+lastmod = os.path.getmtime('feedback-256010.csv')
+lastmod = datetime.fromtimestamp(lastmod)
+lastmodstr = lastmod.strftime('%m/%d/%Y')
+st.write('Feedback CSV last downloaded from hotjar: '+str(lastmodstr))
 df = pd.read_csv('feedback-256010.csv')
 
 kvp = {"[All Feedback]" : "","Allen-Bradley" : "ab.rockwellautomation", "Rockwell Automation" : "www.rockwellautomation.com","RA/my" : "www.rockwellautomation.com/my","PCDC" : "compatibility.rockwellautomation",
@@ -54,11 +60,10 @@ elif url == "ab.rockwellautomation":
     cssel = st.selectbox("Choose a region:", options=list(ablkvp.keys()))
     csfil = ablkvp[cssel]
     down_df = df[df['Source URL'].str.contains(csfil)]
+elif url == "rockwellautomation.com/search":
+    down_df = df[df['Source URL'].str.contains('|'.join(["rockwellautomation.com/my/search",url]))]
 
 tmrange = st.slider("Week range:", min_value=1,max_value=52,step=1)
-from datetime import datetime, timedelta
-import pytz
-
 today = datetime.now()
 timzo = pytz.timezone('US/Eastern')
 today = timzo.localize(today)
@@ -130,19 +135,19 @@ else:
 mess_df=date_df.loc[date_df["Message"].notna()]
 mess_df = mess_df.drop(columns=['Number',"User","OS"])
 
-#from wordcloud import WordCloud, STOPWORDS
-#import matplotlib.pyplot as plt
-#if mess_df.empty == False:
-    #st.header("WordCloud for feedback responses:")
-    #cust_swords = ["Rockwell", "Automation"] + list(STOPWORDS)
-    #wcloud = WordCloud(background_color="white", scale=2, font_path='calibri',min_font_size=12,max_words=100,stopwords=cust_swords).generate(" ".join(mess_df['Message']))
-    #plt.figure(figsize=(20,10))
-    #plt.imshow(wcloud, interpolation='bilinear')
-    #plt.axis("off")
-    #plt.show()
-    #st.pyplot()
-#else:
-    #st.write("No responses for given filters.")
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.pyplot as plt
+if mess_df.empty == False:
+    st.header("WordCloud for feedback responses:")
+    cust_swords = ["Rockwell", "Automation"] + list(STOPWORDS)
+    wcloud = WordCloud(background_color="white", scale=2, font_path='calibri',min_font_size=12,max_words=100,stopwords=cust_swords).generate(" ".join(mess_df['Message']))
+    plt.figure(figsize=(20,10))
+    plt.imshow(wcloud, interpolation='bilinear')
+    plt.axis("off")
+    plt.show()
+    st.pyplot()
+else:
+    st.write("No responses for given filters.")
 
 mfildic = {"[No filter]" : 1, "People who can't find a product" : 2, "People who can't download software" : 3, "People who may require a response" : 4}
 cfildic = {"[All Countries]" : 1, "United States" : 2, "Mexico" : 3, "China" : 4, "United Kingdom" : 5}
