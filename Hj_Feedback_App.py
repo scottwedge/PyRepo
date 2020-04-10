@@ -166,7 +166,7 @@ import matplotlib.pyplot as plt
 if mess_df.empty == False:
     st.header("WordCloud for feedback responses:")
     cust_swords = ["Rockwell", "Automation"] + list(STOPWORDS)
-    wcloud = WordCloud(background_color="white", scale=2, font_path='calibri',min_font_size=12,max_words=100,stopwords=cust_swords).generate(" ".join(mess_df['Message']))
+    wcloud = WordCloud(background_color="white", scale=2, min_font_size=12,max_words=100,stopwords=cust_swords).generate(" ".join(mess_df['Message']))
     plt.figure(figsize=(20,10))
     plt.imshow(wcloud, interpolation='bilinear')
     plt.axis("off")
