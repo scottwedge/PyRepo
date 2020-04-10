@@ -17,8 +17,35 @@ import pytz
 # options
 pd.set_option("display.precision", 3)
 pd.options.display.float_format = '{:.4f}'.format
-
 np.set_printoptions(precision=4, suppress=True)
+
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+
+gauth = GoogleAuth()
+gauth.LoadCredentialsFile("mycreds.txt")
+if gauth.credentials is None:
+    gauth.LocalWebserverAuth()
+elif gauth.access_token_expired:
+    gauth.Refresh()
+else:
+    gauth.Authorize()
+gauth.SaveCredentialsFile("mycreds.txt")
+drive = GoogleDrive(gauth)
+fileList = drive.ListFile({'q': "'root' in parents and trashed=false"}).GetList()
+for file in fileList:
+  print('Title: %s, ID: %s' % (file['title'], file['id']))
+  # Get the folder ID that you want
+  if(file['title'] == "Hotjar Folder"):
+      folderID = file['id']
+fileList = drive.ListFile({'q': "'1jj3WQkwr9ewOS7u6bLEqfMshLvRbesMB' in parents and trashed=false"}).GetList()
+for file in fileList:
+  print('Title: %s, ID: %s' % (file['title'], file['id']))
+  # Get the folder ID that you want
+  if(file['title'] == "feedback-256010.csv"):
+      hjdataID = file['id']
+fileob = drive.CreateFile({'id':hjdataID})
+fileob.GetContentFile("feedback-256010.csv")
 
 st.title("HotJar Feedback Analysis")
 lastmod = os.path.getmtime('feedback-256010.csv')
@@ -29,7 +56,7 @@ df = pd.read_csv('feedback-256010.csv')
 
 kvp = {"[All Feedback]" : "","Allen-Bradley" : "ab.rockwellautomation", "Rockwell Automation" : "www.rockwellautomation.com","RA/my" : "www.rockwellautomation.com/my","PCDC" : "compatibility.rockwellautomation",
 "Account" : "www.rockwellautomation.com/account/","Download.RA" : "download.rockwellautomation.com","Search" : "rockwellautomation.com/search","Investor Relations" : "ir.rockwellautomation",
-"Campaign Pages" : "campaign.rockwellautomation"}
+"Campaign Pages" : "campaign.rockwellautomation", "E-learning Pages" : "training/e-learning"}
 #cskvp = {"[No filter]":"", "English - NA":"en_NA", "Spanish - Central America":"es_CEM", "English - Caribbean":"en_CAR", "Spanish - Caribbean":"es_CAR", "English - Middle East":"en_MDE",
 #"English - Sub-Saharan Africa":"en_ZA", "English - Southeast Asia":"en_SEA", "Spanish - Argentina":"es_AR", "Spanish - Mexico":"es_MX", "Portuguese - Brazil":"pt_BR", "Chinese - China":"zh_CN",
 #"German - Germany":"de_DE", "Czech - Czech":"cs_CZ", "Spanish - Spain":"es_ES", "French - France":"fr_FR", "English - India":"en_IN", "English - Israel":"en_IL", "Italian - Italy":"it_IT",
@@ -68,7 +95,6 @@ today = datetime.now()
 timzo = pytz.timezone('US/Eastern')
 today = timzo.localize(today)
 week_prior = today - timedelta(weeks=tmrange)
-week_prior
 
 down_df['Date Submitted'] = pd.to_datetime(down_df['Date Submitted'])
 down_df['Date Submitted']=down_df['Date Submitted'].dt.tz_localize(tz='US/Eastern', nonexistent='shift_forward')
@@ -135,19 +161,19 @@ else:
 mess_df=date_df.loc[date_df["Message"].notna()]
 mess_df = mess_df.drop(columns=['Number',"User","OS"])
 
-#from wordcloud import WordCloud, STOPWORDS
-#import matplotlib.pyplot as plt
-#if mess_df.empty == False:
-    #st.header("WordCloud for feedback responses:")
-    #cust_swords = ["Rockwell", "Automation"] + list(STOPWORDS)
-    #wcloud = WordCloud(background_color="white", scale=2, font_path='calibri',min_font_size=12,max_words=100,stopwords=cust_swords).generate(" ".join(mess_df['Message']))
-    #plt.figure(figsize=(20,10))
-    #plt.imshow(wcloud, interpolation='bilinear')
-    #plt.axis("off")
-    #plt.show()
-    #st.pyplot()
-#else:
-    #st.write("No responses for given filters.")
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.pyplot as plt
+if mess_df.empty == False:
+    st.header("WordCloud for feedback responses:")
+    cust_swords = ["Rockwell", "Automation"] + list(STOPWORDS)
+    wcloud = WordCloud(background_color="white", scale=2, font_path='calibri',min_font_size=12,max_words=100,stopwords=cust_swords).generate(" ".join(mess_df['Message']))
+    plt.figure(figsize=(20,10))
+    plt.imshow(wcloud, interpolation='bilinear')
+    plt.axis("off")
+    plt.show()
+    st.pyplot()
+else:
+    st.write("No responses for given filters.")
 
 mfildic = {"[No filter]" : 1, "People who can't find a product" : 2, "People who can't download software" : 3, "People who may require a response" : 4}
 cfildic = {"[All Countries]" : 1, "United States" : 2, "Mexico" : 3, "China" : 4, "United Kingdom" : 5}
