@@ -71,15 +71,16 @@ def main():
     webdic = {"[All Feedback]" : "","Allen-Bradley" : "ab.rockwellautomation", "Rockwell Automation" : "www.rockwellautomation.com","RA/my" : "www.rockwellautomation.com/my","PCDC" : "compatibility.rockwellautomation",
     "Account" : "www.rockwellautomation.com/account/","Download.RA" : "download.rockwellautomation.com","Search" : "rockwellautomation.com/search","Investor Relations" : "ir.rockwellautomation",
     "Campaign Pages" : "campaign.rockwellautomation", "RA - NA" : "North America", " RA - EMEA" : "EMEA", " RA - APAC" : "APAC", "RA - LAR" : "LAR"}
-    webms = st.multiselect("Choose site feedback(s) to send:", list(webdic.keys()), key='testkey')
-    etype=st.selectbox("Email Type:",['Responses','Visualizations'])
+    st.sidebar.header('Send Emails:')
+    webms = st.sidebar.multiselect("Choose site feedback(s) to send:", list(webdic.keys()), key='testkey')
+    etype=st.sidebar.selectbox("Email Type:",['Responses','Visualizations'])
     urlsld = []
     for site in webms:
         urlsld.append(webdic[site])
-    tmrange = st.number_input("Send data for past _ week(s):", min_value=1, max_value=52, step=1)
-    target_email = st.selectbox("Email recipients:", unique_emails)
+    tmrange = st.sidebar.number_input("Send data for past _ week(s):", min_value=1, max_value=52, step=1)
+    target_email = st.sidebar.selectbox("Email recipients:", unique_emails)
 
-    if st.button("Send email"):
+    if st.sidebar.button("Send email"):
         for url in urlsld:
             sendEmail(target_email,url,tmrange,etype)
 
@@ -105,28 +106,25 @@ def main():
                 mrv_str = mostrecentv.strftime('%m/%d/%Y')
                 if (today - timedelta(weeks=4)) > mostrecentv:
                     #It has been +4 weeks since last vis report.
-                    st.markdown('<p>Last visualization report sent on: <font color="red">'+mrv_str+'</font></p>',unsafe_allow_html=True)
+                    st.markdown('<p>&#128314 Last visualization report sent on: <font color="red">'+mrv_str+'</font></p>',unsafe_allow_html=True)
+                    #st.warning('Action Item: ')
                 else:
-                    st.markdown('<p>Last visualization report sent on: <font color="green">'+mrv_str+'</font></p>',unsafe_allow_html=True)
+                    st.markdown('<p>&#9989 Last visualization report sent on: <font color="green">'+mrv_str+'</font></p>',unsafe_allow_html=True)
             else:
-                st.markdown('(Never been sent a vis report)')
+                st.markdown('<p>&#128314 (Never been sent a visualization report)</p>',unsafe_allow_html=True)
+                #st.warning('Action Item: ')
             if r_em_edf.empty == False:
                 mostrecentr = r_em_edf['Date'].max()
                 mrr_str = mostrecentr.strftime('%m/%d/%Y')
                 if (today - timedelta(weeks=1)) > mostrecentr:
                     #It has been +1 weeks since a response report
-                    st.markdown('<p>Last response report sent on: <font color="red">'+mrr_str+'</font></p>',unsafe_allow_html=True)
+                    st.markdown('<p>&#128314 Last response report sent on: <font color="red">'+mrr_str+'</font></p>',unsafe_allow_html=True)
+                    #st.warning('Action Item: ')
                 else:
-                    st.markdown('<p>Last response report sent on: <font color="green">'+mrr_str+'</font></p>',unsafe_allow_html=True)
+                    st.markdown('<p>&#9989 Last response report sent on: <font color="green">'+mrr_str+'</font></p>',unsafe_allow_html=True)
             else:
-                st.markdown('(Never been sent a response report)')
-
-            for rec in em_edf.itertuples():
-                if (today.month == rec.Date.month and today.year == rec.Date.year) and rec.Email_type == "Visualizations":
-                    st.text('   -has recieved'+str(row.Site)+' this month.')
-                    visgood = 1
-            if visgood == 0:
-                st.text('No vis email has been sent in past month.')
+                st.markdown('<p>&#128314 (Never been sent a response report)</p>',unsafe_allow_html=True)
+                #st.warning('Action Item: ')
 
 def sendEmail(target_email,url,tmrange,etype):
     df = pd.read_csv('feedback-256010.csv')
