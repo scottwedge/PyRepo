@@ -19,6 +19,8 @@ from datetime import datetime, timedelta
 import pytz
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+import apscheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 def main():
     gauth = GoogleAuth()
@@ -79,7 +81,11 @@ def main():
         urlsld.append(webdic[site])
     tmrange = st.sidebar.number_input("Send data for past _ week(s):", min_value=1, max_value=52, step=1)
     target_email = st.sidebar.selectbox("Email recipients:", unique_emails)
-
+    def schtask():
+        sendEmail('olander.14@yahoo.com',"www.rockwellautomation.com",1,'Visualizations')
+    sched = BlockingScheduler(daemon=True)
+    sched.add_job(schtask,'cron', minute=26, id='sendvisemails_test')
+    sched.start()
     if st.sidebar.button("Send email"):
         for url in urlsld:
             sendEmail(target_email,url,tmrange,etype)
