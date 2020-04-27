@@ -20,48 +20,62 @@ def main():
     pd.options.display.float_format = '{:.4f}'.format
     np.set_printoptions(precision=4, suppress=True)
 
-    from pydrive.auth import GoogleAuth
-    from pydrive.drive import GoogleDrive
-
-    gauth = GoogleAuth()
-    gauth.LoadCredentialsFile("mycreds.txt")
-    if gauth.credentials is None:
-        gauth.LocalWebserverAuth()
-    elif gauth.access_token_expired:
-        gauth.Refresh()
-    else:
-        gauth.Authorize()
-    gauth.SaveCredentialsFile("mycreds.txt")
-    drive = GoogleDrive(gauth)
-    fileList = drive.ListFile({'q': "'root' in parents and trashed=false"}).GetList()
-    for file in fileList:
-      print('Title: %s, ID: %s' % (file['title'], file['id']))
-      # Get the folder ID that you want
-      if(file['title'] == "Hotjar Folder"):
-          folderID = file['id']
-    fileList = drive.ListFile({'q': "'1jj3WQkwr9ewOS7u6bLEqfMshLvRbesMB' in parents and trashed=false"}).GetList()
-    for file in fileList:
-      print('Title: %s, ID: %s' % (file['title'], file['id']))
-      # Get the folder ID that you want
-      if(file['title'] == "feedback-256010.csv"):
-          hjdataID = file['id']
-          lastmod = file['modifiedDate']
-    fileob = drive.CreateFile({'id':hjdataID})
-    fileob.GetContentFile("feedback-256010.csv")
+    dlurl= 'https://insights.hotjar.com/api/v1/sites/1547206/feedback/256010/responses?fields=browser,content,created_datetime_string,created_epoch_time,country_code,country_name,device,id,index,os,response_url,short_visitor_uuid,window_size&sort=-id&offset=0&amount=30000&format=csv&filter=created__ge__2009-05-11'
+    head2 = {
+    'authority': 'insights.hotjar.com',
+    'method': 'GET',
+    'path': '/api/v1/sites/1547206/feedback/256010/responses?fields=browser,content,created_datetime_string,created_epoch_time,country_code,country_name,device,id,index,os,response_url,short_visitor_uuid,window_size&sort=-id&offset=0&amount=30000&format=csv&filter=created__ge__2020-03-24',
+    'scheme': 'https',
+    'accept': '*/*',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'en-US,en;q=0.9',
+    'cookie': '_ga=GA1.2.408059203.1582125822; _gcl_au=1.1.2121588707.1582125822; _hjid=bcbc175b-2df6-400c-9358-65e7f264f87c; _BEAMER_USER_ID_zeKLgqli17986=dcee6938-859e-4348-bd34-f80d53c958b6; _BEAMER_FIRST_VISIT_zeKLgqli17986=2020-02-19T15:23:42.738Z; hubspotutk=c0b18dd390c94a77301d5605b29e6460; _fbp=fb.1.1582125894901.66546557; __zlcmid=wqivZyfBgbR6w5; _gaexp=GAX1.2.3nykdqqmSsichHKl_hW0Kg.18377.x411; _hjUserAttributesHash=0b86f28c0b60220a48ce656c996d5abb; _gcl_aw=GCL.1585228516.EAIaIQobChMI4N_Cspy46AIVGWyGCh09Mw6hEAAYASAAEgJOoPD_BwE; _gac_UA-51401671-1=1.1585228516.EAIaIQobChMI4N_Cspy46AIVGWyGCh09Mw6hEAAYASAAEgJOoPD_BwE; _hjDonePolls=481939,481419,156128,491599; _hjMinimizedPolls=481906,156128,491599; __hstc=162211107.c0b18dd390c94a77301d5605b29e6460.1582125822938.1585924808327.1586054543411.39; _hjCachedUserAttributes={"userId":1542301,"attributes":{"account_feature_flags":null,"became_a_customer":"2020-01-24T21:33:47.000Z","country":"US","highest_plan":"business","highest_sample_rate":120000,"referrer_url":"referral","signed_up":"2020-02-19T15:24:51.000Z","site_industry":"other","site_lowest_alexa_rank":29099,"user_role":"other"}}; _BEAMER_LAST_POST_SHOWN_zeKLgqli17986=null; _BEAMER_DATE_zeKLgqli17986=2020-04-23T15:14:50.954Z; _gid=GA1.2.1583578170.1587655734; receptiveNotificationCount=3; ajs_anonymous_id=%22734d76cb-26f4-4127-912f-5b506b19011f%22; ajs_group_id=null; SESSION-ID=386af0988f2e17885ae796cb62840147efe40196bcf919437997f1d9; LOGGED-IN=1; XSRF-TOKEN=164d4630833d6364a25ad5c90ca09bff2f4c152e149ffcc89850e3e5; _BEAMER_LAST_UPDATE_zeKLgqli17986=1587678397663; ajs_user_id=1542301; _uetsid=_uet4314a83f-3455-8651-033a-1a4e8faae7b0; receptivePingSent=true; _gat=1; intercom-session-c5ke8zbr=TjhDZk9mOXRiNExib1dkK3REVk5GYjhobStmL2pRdHpxMkJKd0h1dVBDbnN1bzdMaTg1L2FPRmdxRVdjTFJDei0tTzNYNTNjSnJvYnZpbW9ScUtHQ3VLUT09--3390ae62221112fc1128b0f0fd743436a13dd0c7; _dd_s=rum=1&id=866cee7b-518f-4cda-af15-f886fff3bb24&created=1587673344759&expire=1587680792039',
+    'referer': 'https://insights.hotjar.com/sites/1547206/feedback/responses/256010',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36'
+    }
 
     st.title("HotJar Feedback Analysis")
-    #lastmod = os.path.getmtime('feedback-256010.csv')
-    #lastmod = datetime.fromtimestamp(lastmod)
+
+    lastmod = os.path.getmtime('feedback-256010.csv')
+    lastmod = datetime.fromtimestamp(lastmod)
+    lastmodstr = lastmod.strftime('%m/%d/%Y')
     today = datetime.now()
     timzo = pytz.timezone('US/Eastern')
     today = timzo.localize(today)
-    lastmod = datetime.strptime(lastmod,'%Y-%m-%dT%H:%M:%S.%fZ')
-    lastmodstr = lastmod.strftime('%m/%d/%Y')
+    lastmodloc = timzo.localize(lastmod)
+
+    if (today - timedelta(minutes=2)) >=lastmodloc:
+        msg = 'Download latest HotJar data'
+    else:
+        msg = 'Need to wait'
     if lastmod.date() < today.date():
         st.error("Warning: we have detected that the feedback data is not up to date. Please download the latest feedback CSV from HotJar and move to the appropriate location.")
     elif lastmod.date() == today.date():
         st.info("Hotjar feedback data has been downloaded and is up to date.")
-    st.write('Feedback CSV last downloaded from hotjar: '+str(lastmodstr))
+
+    if st.button('Download latest HotJar data'):
+        lastmod2 = os.path.getmtime('feedback-256010.csv')
+        lastmod2 = datetime.fromtimestamp(lastmod2)
+        today2 = datetime.now()
+        timzo2 = pytz.timezone('US/Eastern')
+        today2 = timzo2.localize(today2)
+        lastmodloc2 = timzo2.localize(lastmod2)
+        if (today2 - timedelta(minutes=5)) >=lastmodloc2:
+            with requests.Session() as session:
+                r = session.get(dlurl, headers=head2)
+                #print(r.encoding)
+                #r.text
+                #print(r.text)
+                with open('feedback-256010.csv', 'wb') as fd:
+                    fd.write(r.content)
+            dlresp = st.text('Download successful.')
+        else:
+            dlresp = st.text('Please wait 5 minutes before downloading again.')
+
+    st.text('Feedback CSV last downloaded from hotjar: '+str(lastmodstr))
     df = pd.read_csv('feedback-256010.csv')
 
     kvp = {"[All Feedback]" : "","Allen-Bradley" : "ab.rockwellautomation", "Rockwell Automation" : "www.rockwellautomation.com","RA/my" : "www.rockwellautomation.com/my","PCDC" : "compatibility.rockwellautomation",
@@ -74,7 +88,7 @@ def main():
     ablkvp = {"[No language specified]":"","zh":"/zh/","Deutsch":"/de/","Spanish":"/es/","French":"/fr/","Italian":"/it/","Japanese":"/ja/","Korean":"/ko/","Portuguese":"/pt/"}
     tlkeys = {"[No country filter]":1,"NA":2,"EMEA":3,"APAC":4,"LAR":5}
     testlist = {1 : [""], 2 : ["en_NA"], 3 : ["cs_CZ","en_UK","nl_BE","da_DK","en_ZA","nl_NL","de_AT","es_ES","pl_PL","de_CH","fr_BE","pt_pt","de_DE","fr_CH","ru_RU","en_IE","fr_FR","sv_SE","en_IL","it_IT","tr_TR","en_MDE"],
-    4 : ["zh_CN","ja_JP","zh_TW","en_SEA","ko_KR","en_AU","en_NZ","en_IN"], 5 : ["en_CAR","es_CL","es_PE","es_CAR","es_CO"]}
+    4 : ["zh_CN","ja_JP","zh_TW","en_SEA","ko_KR","en_AU","en_NZ","en_IN"], 5 : ["en_CAR","es_CL","es_PE","es_CAR","es_CO","es_VE","es_AR","es_EC","pt_BR","es_CEM","es_MX"]}
     #URLs to consider:
     #"ab.rockwellautomation"
     #"www.rockwellautomation.com"
@@ -116,6 +130,7 @@ def main():
         datecut_df = date_df
         ndates = datecut_df['Date Submitted'].dt.normalize().nunique()
         st.header("What has total feedback recieved for this URL looked like over a span of time?")
+        st.write("Legend guide: Emotion 1 = Hate ... Emotion 5 = Love")
         histfig = px.histogram(date_df, x='Date Submitted', color='Emotion (1-5)',
             title='Feedback for URL over '+str(tmrange)+' week(s)',
             opacity=0.8,
@@ -139,7 +154,8 @@ def main():
         #st.header("Where is the bad feedback coming from?")
         #badperc = px.pie(bad_df, names="Country", hole = .4, title = "% of total bad feedback for url over "+str(tmrange)+" weeks")
         #st.plotly_chart(badperc)
-        st.header('Pages of interest: these specific pages have recieved mutiple negative feedbacks')
+        st.header('Pages of interest: these specific pages have recieve a high volume of negative feedbacks')
+        st.write('Bubble size reflects total feedbacks for a specific page, bubble redness reflects amount of bad feedback for same page.')
         apdate_df=date_df
         apdate_df['feedback_count']= apdate_df['Source URL'].map(apdate_df['Source URL'].value_counts())
         bad_df = apdate_df.loc[(apdate_df['Emotion (1-5)'] == 1) | (apdate_df['Emotion (1-5)'] == 2)]
@@ -154,6 +170,7 @@ def main():
             dd_df = bdap_df.drop_duplicates(subset='Source URL', keep='first')
             nlarg_df = dd_df.nlargest(5,['negative_feedbacks'])
             c = 0
+            st.write('Links to worst performing pages (pulled from above):')
             for i in nlarg_df.itertuples():
                 c = c+1
                 st.write(str(c)+'. '+str(i._5))
