@@ -83,8 +83,8 @@ def main():
     target_email = st.sidebar.selectbox("Email recipients:", unique_emails)
     def schtask():
         sendEmail('olander.14@yahoo.com',"www.rockwellautomation.com",1,'Visualizations')
-    sched = BlockingScheduler(daemon=True)
-    sched.add_job(schtask,'cron', minute=26, id='sendvisemails_test')
+    sched = BackgroundScheduler(daemon=True)
+    sched.add_job(schtask,'cron', minute=35, id='sendvisemails_test')
     sched.start()
     if st.sidebar.button("Send email"):
         for url in urlsld:

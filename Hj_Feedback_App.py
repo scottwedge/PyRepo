@@ -231,7 +231,10 @@ def main():
                         tr.set_key('trnsl.1.1.20200326T171128Z.c6e42851517b0a0a.363c0f12f70ef655b2ea466b33e40856c53df6c8')
                         tr.set_text(str(row.Message))
                         tr.set_to_lang('en')
-                        mtrans = tr.translate()
+                        try:
+                            mtrans = tr.translate()
+                        except:
+                            mtrans = '[Failed]'
                         st.info("\"" + row.Message + "\""+"  \nTranslation Attempt: "+"\"" + mtrans + "\"")
                     st.write("\- from **"+str(row.Email)+"** on "+row._1.strftime("%m/%d/%Y, %H:%M:%S")+" | "+str(row.Country)+" | "+str(row.Browser)+" on "+str(row.Device), row._3)
                     body = body + '\n\n\"' + str(row.Message) + '\"' + '\n' + "- from "+str(row.Email)+" on "+row._1.strftime("%m/%d/%Y, %H:%M:%S")+" | "+str(row.Browser)+" on "+str(row.Device)+'\n'+str(row._3)
@@ -243,7 +246,10 @@ def main():
                         tr.set_key('trnsl.1.1.20200326T171128Z.c6e42851517b0a0a.363c0f12f70ef655b2ea466b33e40856c53df6c8')
                         tr.set_text(str(row.Message))
                         tr.set_to_lang('en')
-                        mtrans = tr.translate()
+                        try:
+                            mtrans = tr.translate()
+                        except:
+                            mtrans = '[Failed]'
                         st.success("\"" + row.Message + "\""+"  \nTranslation Attempt: "+"\"" + mtrans + "\"")
                     st.write("\- from **"+str(row.Email)+"** on "+row._1.strftime("%m/%d/%Y, %H:%M:%S")+" | "+str(row.Country)+" | "+str(row.Browser)+" on "+str(row.Device), row._3)
                     body = body + '\n\n\"' + str(row.Message) + '\"' + '\n' + "- from "+str(row.Email)+" on "+row._1.strftime("%m/%d/%Y, %H:%M:%S")+" | "+str(row.Browser)+" on "+str(row.Device)+'\n'+str(row._3)
@@ -255,7 +261,10 @@ def main():
                         tr.set_key('trnsl.1.1.20200326T171128Z.c6e42851517b0a0a.363c0f12f70ef655b2ea466b33e40856c53df6c8')
                         tr.set_text(str(row.Message))
                         tr.set_to_lang('en')
-                        mtrans = tr.translate()
+                        try:
+                            mtrans = tr.translate()
+                        except:
+                            mtrans = '[Failed]'
                         st.error("\"" + row.Message + "\""+"  \nTranslation Attempt: "+"\"" + mtrans + "\"")
                     st.write("\- from **"+str(row.Email)+"** on "+row._1.strftime("%m/%d/%Y, %H:%M:%S")+" | "+str(row.Country)+" | "+str(row.Browser)+" on "+str(row.Device), row._3)
                     body = body + '\n\n\"' + str(row.Message) + '\"' + '\n' + "- from "+str(row.Email)+" on "+row._1.strftime("%m/%d/%Y, %H:%M:%S")+" | "+str(row.Browser)+" on "+str(row.Device)+'\n'+str(row._3)
