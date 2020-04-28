@@ -39,31 +39,23 @@ def main():
 
     st.title("HotJar Feedback Analysis")
 
+    timzo = pytz.timezone('US/Eastern')
     lastmod = os.path.getmtime('feedback-256010.csv')
     lastmod = datetime.fromtimestamp(lastmod)
-    lastmodstr = lastmod.strftime('%m/%d/%Y')
+    lastmodstr = lastmod.strftime('%m/%d/%Y'+' '+'%X')
     today = datetime.now()
-    timzo = pytz.timezone('US/Eastern')
     today = timzo.localize(today)
     lastmodloc = timzo.localize(lastmod)
 
-    if (today - timedelta(minutes=2)) >=lastmodloc:
-        msg = 'Download latest HotJar data'
-    else:
-        msg = 'Need to wait'
-    if lastmod.date() < today.date():
-        st.error("Warning: we have detected that the feedback data is not up to date. Please download the latest feedback CSV from HotJar and move to the appropriate location.")
-    elif lastmod.date() == today.date():
-        st.info("Hotjar feedback data has been downloaded and is up to date.")
-
     if st.button('Download latest HotJar data'):
-        lastmod2 = os.path.getmtime('feedback-256010.csv')
-        lastmod2 = datetime.fromtimestamp(lastmod2)
-        today2 = datetime.now()
-        timzo2 = pytz.timezone('US/Eastern')
-        today2 = timzo2.localize(today2)
-        lastmodloc2 = timzo2.localize(lastmod2)
-        if (today2 - timedelta(minutes=5)) >=lastmodloc2:
+        timzo = pytz.timezone('US/Eastern')
+        lastmod = os.path.getmtime('feedback-256010.csv')
+        lastmod = datetime.fromtimestamp(lastmod)
+        lastmodstr = lastmod.strftime('%m/%d/%Y'+' '+'%X')
+        today = datetime.now()
+        today = timzo.localize(today)
+        lastmodloc = timzo.localize(lastmod)
+        if (today - timedelta(minutes=5)) >=lastmodloc:
             with requests.Session() as session:
                 r = session.get(dlurl, headers=head2)
                 #print(r.encoding)
@@ -75,7 +67,11 @@ def main():
         else:
             dlresp = st.text('Please wait 5 minutes before downloading again.')
 
-    st.text('Feedback CSV last downloaded from hotjar: '+str(lastmodstr))
+    st.text('Showing data from Hotjar as of: '+str(lastmodstr))
+    if lastmod.date() < today.date():
+        st.error('Warning: we have detected that the feedback data is not up to date. Please hit "Download latest HotJar data" to fetch latest feedback.')
+    elif lastmod.date() == today.date():
+        st.info("Hotjar feedback data has been downloaded recently.")
     df = pd.read_csv('feedback-256010.csv')
 
     kvp = {"[All Feedback]" : "","Allen-Bradley" : "ab.rockwellautomation", "Rockwell Automation" : "www.rockwellautomation.com","RA/my" : "www.rockwellautomation.com/my","PCDC" : "compatibility.rockwellautomation",
@@ -230,9 +226,13 @@ def main():
                         tr = Translater()
                         tr.set_key('trnsl.1.1.20200326T171128Z.c6e42851517b0a0a.363c0f12f70ef655b2ea466b33e40856c53df6c8')
                         tr.set_text(str(row.Message))
+                        try:
+                            tr.set_from_lang(detlan)
+                        except:
+                            tr.set_from_lang('en')
                         tr.set_to_lang('en')
                         try:
-                            mtrans = tr.translate()
+                            mtrans = tr.translate(timeout=1)
                         except:
                             mtrans = '[Failed]'
                         st.info("\"" + row.Message + "\""+"  \nTranslation Attempt: "+"\"" + mtrans + "\"")
@@ -245,9 +245,13 @@ def main():
                         tr = Translater()
                         tr.set_key('trnsl.1.1.20200326T171128Z.c6e42851517b0a0a.363c0f12f70ef655b2ea466b33e40856c53df6c8')
                         tr.set_text(str(row.Message))
+                        try:
+                            tr.set_from_lang(detlan)
+                        except:
+                            tr.set_from_lang('en')
                         tr.set_to_lang('en')
                         try:
-                            mtrans = tr.translate()
+                            mtrans = tr.translate(timeout=1)
                         except:
                             mtrans = '[Failed]'
                         st.success("\"" + row.Message + "\""+"  \nTranslation Attempt: "+"\"" + mtrans + "\"")
@@ -260,9 +264,13 @@ def main():
                         tr = Translater()
                         tr.set_key('trnsl.1.1.20200326T171128Z.c6e42851517b0a0a.363c0f12f70ef655b2ea466b33e40856c53df6c8')
                         tr.set_text(str(row.Message))
+                        try:
+                            tr.set_from_lang(detlan)
+                        except:
+                            tr.set_from_lang('en')
                         tr.set_to_lang('en')
                         try:
-                            mtrans = tr.translate()
+                            mtrans = tr.translate(timeout=1)
                         except:
                             mtrans = '[Failed]'
                         st.error("\"" + row.Message + "\""+"  \nTranslation Attempt: "+"\"" + mtrans + "\"")
