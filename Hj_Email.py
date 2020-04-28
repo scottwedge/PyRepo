@@ -98,7 +98,7 @@ def main():
     @st.cache()
     def setupSch():
         sched = BackgroundScheduler(daemon=True)
-        sched.add_job(schtask,'cron', minute=50, id='sendvisemails_test')
+        sched.add_job(schtask,'interval', minutes=10, id='sendvisemails_test')
         sched.start()
     setupSch()
     #atexit.register(lambda: sched.shutdown())
