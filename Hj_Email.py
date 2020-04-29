@@ -97,7 +97,7 @@ def main():
         sendEmail('olander.14@yahoo.com',"www.rockwellautomation.com",1,'Visualizations')
     #@st.cache()
     #def setupSch():
-    sched = BlockingScheduler(daemon=True)
+    sched = BlockingScheduler()
     sched.add_job(schtask,'interval', minutes=5, id='sendvisemails_test')
     sched.start()
     #setupSch()
