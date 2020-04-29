@@ -20,7 +20,7 @@ import pytz
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 import apscheduler
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 
 def main():
@@ -94,13 +94,13 @@ def main():
     tmrange = st.sidebar.number_input("Send data for past _ week(s):", min_value=1, max_value=52, step=1)
     target_email = st.sidebar.selectbox("Email recipients:", unique_emails)
     def schtask():
-        sendEmail('olander.14@yahoo.com',"www.rockwellautomation.com",1,'Visualizations')
-    #@st.cache()
-    #def setupSch():
-    sched = BlockingScheduler()
-    sched.add_job(schtask,'interval', minutes=5, id='sendvisemails_test')
-    sched.start()
-    #setupSch()
+        sendEmail('olander.14@yahoo.com',"www.rockwellautomation.com",1,'Responses')
+    @st.cache()
+    def setupSch():
+        sched = BackgroundScheduler()
+        sched.add_job(schtask,'interval', minutes=5, id='sendvisemails_test')
+        sched.start()
+    setupSch()
     #atexit.register(lambda: sched.shutdown())
     if st.sidebar.button("Send email"):
         for url in urlsld:
