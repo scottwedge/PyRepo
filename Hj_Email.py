@@ -95,12 +95,12 @@ def main():
     target_email = st.sidebar.selectbox("Email recipients:", unique_emails)
     def schtask():
         sendEmail('olander.14@yahoo.com',"www.rockwellautomation.com",1,'Visualizations')
-    @st.cache()
-    def setupSch():
-        sched = BlockingScheduler(daemon=True)
-        sched.add_job(schtask,'interval', minutes=60, id='sendvisemails_test')
-        sched.start()
-    setupSch()
+    #@st.cache()
+    #def setupSch():
+    sched = BlockingScheduler(daemon=True)
+    sched.add_job(schtask,'interval', minutes=5, id='sendvisemails_test')
+    sched.start()
+    #setupSch()
     #atexit.register(lambda: sched.shutdown())
     if st.sidebar.button("Send email"):
         for url in urlsld:
