@@ -20,7 +20,7 @@ import pytz
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 import apscheduler
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 import atexit
 
 def main():
@@ -97,8 +97,8 @@ def main():
         sendEmail('olander.14@yahoo.com',"www.rockwellautomation.com",1,'Visualizations')
     @st.cache()
     def setupSch():
-        sched = BackgroundScheduler(daemon=True)
-        sched.add_job(schtask,'interval', minutes=10, id='sendvisemails_test')
+        sched = BlockingdScheduler(daemon=True)
+        sched.add_job(schtask,'interval', minutes=30, id='sendvisemails_test')
         sched.start()
     setupSch()
     #atexit.register(lambda: sched.shutdown())
