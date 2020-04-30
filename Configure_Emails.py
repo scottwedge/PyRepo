@@ -1,5 +1,4 @@
-import numpy as np
-import json
+
 import requests
 import pandas as pd
 import timeit
