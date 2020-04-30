@@ -15,7 +15,7 @@ import apscheduler
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 def main():
-    stask():
+    def stask():
         print('Task fired')
     sched = BlockingScheduler()
     sched.add_job(stask,'interval', minutes=1)
