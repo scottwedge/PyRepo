@@ -100,8 +100,9 @@ def main():
     # contdf['Emails']=contdf['Emails'].str.split(', ')
 
     def schtask():
+        loginurl = 'https://insights.hotjar.com/api/v2/users'
         dlurl= 'https://insights.hotjar.com/api/v1/sites/1547206/feedback/256010/responses?fields=browser,content,created_datetime_string,created_epoch_time,country_code,country_name,device,id,index,os,response_url,short_visitor_uuid,window_size&sort=-id&offset=0&amount=30000&format=csv&filter=created__ge__2009-05-11'
-        head2 = {
+        headexp = {
             'authority': 'insights.hotjar.com',
             'method': 'GET',
             'path': '/api/v1/sites/1547206/feedback/256010/responses?fields=browser,content,created_datetime_string,created_epoch_time,country_code,country_name,device,id,index,os,response_url,short_visitor_uuid,window_size&sort=-id&offset=0&amount=30000&format=csv&filter=created__ge__2020-03-24',
@@ -109,15 +110,34 @@ def main():
             'accept': '*/*',
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'en-US,en;q=0.9',
-            'cookie': '_ga=GA1.2.408059203.1582125822; _gcl_au=1.1.2121588707.1582125822; _hjid=bcbc175b-2df6-400c-9358-65e7f264f87c; _BEAMER_USER_ID_zeKLgqli17986=dcee6938-859e-4348-bd34-f80d53c958b6; _BEAMER_FIRST_VISIT_zeKLgqli17986=2020-02-19T15:23:42.738Z; hubspotutk=c0b18dd390c94a77301d5605b29e6460; _fbp=fb.1.1582125894901.66546557; __zlcmid=wqivZyfBgbR6w5; _gcl_aw=GCL.1585228516.EAIaIQobChMI4N_Cspy46AIVGWyGCh09Mw6hEAAYASAAEgJOoPD_BwE; _gac_UA-51401671-1=1.1585228516.EAIaIQobChMI4N_Cspy46AIVGWyGCh09Mw6hEAAYASAAEgJOoPD_BwE; _hjDonePolls=481939,481419,156128,491599; _hjMinimizedPolls=481906,156128,491599; __hstc=162211107.c0b18dd390c94a77301d5605b29e6460.1582125822938.1585924808327.1586054543411.39; _BEAMER_DATE_zeKLgqli17986=2020-04-23T15:14:50.954Z; _hjIncludedInSample=1; _BEAMER_LAST_POST_SHOWN_zeKLgqli17986=1138945; _hjUserAttributesHash=ee9ffb91a314801cef0a410822bd5c93; receptiveNotificationCount=6; _gid=GA1.2.1421648835.1588522759; _BEAMER_FILTER_BY_URL_zeKLgqli17986=false; ajs_group_id=null; ajs_anonymous_id=%22370d38b8-df25-458d-98f3-bc48522865a6%22; SESSION-ID=7c0279d605f5c6cdfd84c14ea7be932f38ccb9a6cd113ba9e3900daf; LOGGED-IN=1; XSRF-TOKEN=9dc7865fe3b4e2f4c68494b1b7fb6e2b67bf1fca18da63bb80feebcf; ajs_user_id=1542301; _BEAMER_LAST_UPDATE_zeKLgqli17986=1588522765334; intercom-session-c5ke8zbr=ZWtxUm5MamgyVmNBWkRLbWFiZjBsazB3ZlNlN3FPLzJkODV0MUJjZ0dtTnJzTGhaZDhLSlpxR29ydUgxZXBlSS0tRCtvQmM3ekdGN3g2bFBrUDdPYjVldz09--b196cb6b8f9eb112cab13623a0d4cf21543ac32d; _uetsid=_ueta9119d5e-3277-b232-d1de-e2ac3853d822; _dd_s=rum=0&expire=1588524188050',
             'referer': 'https://insights.hotjar.com/sites/1547206/feedback/responses/256010',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36'
             }
+        postheader = {
+            'authority': 'insights.hotjar.com',
+            'method': 'POST',
+            'path': '/api/v2/users',
+            'scheme': 'https',
+            'accept': 'application/json, text/plain, */*',
+            'accept-encoding': 'gzip, deflate, br',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-length': '77',
+            'content-type': 'application/json;charset=UTF-8',
+            'cookie': '_ga=GA1.2.408059203.1582125822; _gcl_au=1.1.2121588707.1582125822; _hjid=bcbc175b-2df6-400c-9358-65e7f264f87c; _BEAMER_USER_ID_zeKLgqli17986=dcee6938-859e-4348-bd34-f80d53c958b6; _BEAMER_FIRST_VISIT_zeKLgqli17986=2020-02-19T15:23:42.738Z; hubspotutk=c0b18dd390c94a77301d5605b29e6460; _fbp=fb.1.1582125894901.66546557; __zlcmid=wqivZyfBgbR6w5; _gcl_aw=GCL.1585228516.EAIaIQobChMI4N_Cspy46AIVGWyGCh09Mw6hEAAYASAAEgJOoPD_BwE; _gac_UA-51401671-1=1.1585228516.EAIaIQobChMI4N_Cspy46AIVGWyGCh09Mw6hEAAYASAAEgJOoPD_BwE; _hjDonePolls=481939,481419,156128,491599; _hjMinimizedPolls=481906,156128,491599; __hstc=162211107.c0b18dd390c94a77301d5605b29e6460.1582125822938.1585924808327.1586054543411.39; _BEAMER_DATE_zeKLgqli17986=2020-04-23T15:14:50.954Z; _hjIncludedInSample=1; _BEAMER_LAST_POST_SHOWN_zeKLgqli17986=1138945; _hjUserAttributesHash=ee9ffb91a314801cef0a410822bd5c93; receptiveNotificationCount=6; _gid=GA1.2.1421648835.1588522759; _BEAMER_LAST_UPDATE_zeKLgqli17986=1588522765334; _gat=1; ajs_anonymous_id=%22a15ab479-8323-4d1a-9115-a39c48fee53e%22; _dd_s=rum=0&expire=1588538442658',
+            'origin': 'https://insights.hotjar.com',
+            'referer': 'https://insights.hotjar.com/login',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-origin',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36'
+            }
         with requests.Session() as session:
-            r = session.get(dlurl, headers=head2)
+            payload = {"action":"login", "email":"rsolande@ra.rockwell.com", "password":"tho3F^tick"}
+            rp = session.post(loginurl, data=json.dumps(payload), headers=postheader)
+            r = session.get(dlurl, headers=headexp)
             with open('feedback-256010.csv', 'wb') as fd:
                 fd.write(r.content)
         contdf = pd.read_csv('HJemail_contacts.csv')
