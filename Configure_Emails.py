@@ -69,7 +69,7 @@ def main():
         sel_contdf = contdf.loc[contdf['Site']==selsite]
         sel_contdf['Emails']=sel_contdf['Emails'].str.split(', ')
         for row in sel_contdf.dropna().itertuples():
-            st.subheader('Emails scheduled to recieve feedback for '+ str(webms)+':')
+            st.subheader('Emails scheduled to receive feedback for '+ str(webms)+':')
             for e in row.Emails:
                 st.text(e)
 

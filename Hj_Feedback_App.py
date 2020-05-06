@@ -140,7 +140,7 @@ def main():
     else:
         datecut_df = date_df
         ndates = datecut_df['Date Submitted'].dt.normalize().nunique()
-        st.header("What has total feedback recieved for this URL looked like over a span of time?")
+        st.header("What has total feedback received for this URL looked like over a span of time?")
         st.write("Legend guide: Emotion 1 = Hate ... Emotion 5 = Love")
         histfig = px.histogram(date_df, x='Date Submitted', color='Emotion (1-5)',
             title='Feedback for URL over '+str(tmrange)+' week(s)',
@@ -165,7 +165,7 @@ def main():
         #st.header("Where is the bad feedback coming from?")
         #badperc = px.pie(bad_df, names="Country", hole = .4, title = "% of total bad feedback for url over "+str(tmrange)+" weeks")
         #st.plotly_chart(badperc)
-        st.header('Pages of interest: these specific pages have recieve a high volume of negative feedbacks')
+        st.header('Pages of interest: these specific pages have receive a high volume of negative feedbacks')
         st.write('Bubble size reflects total feedbacks for a specific page, bubble redness reflects amount of bad feedback for same page.')
         apdate_df=date_df
         apdate_df['feedback_count']= apdate_df['Source URL'].map(apdate_df['Source URL'].value_counts())
